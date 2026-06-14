@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victor Chukwudebelu — AI Researcher · Cybersecurity · FinTech</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void:   '#050D1A',
+            deep:   '#0A1628',
+            slate:  '#1A2744',
+            steel:  '#8899BB',
+            cyan:   '#00D4FF',
+            cyanlo: '#00AACC',
+            frost:  '#F0F4FF',
+          },
+          fontFamily: {
+            display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+            mono:    ['"JetBrains Mono"', 'monospace'],
+            body:    ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { color-scheme: dark; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #050D1A;
+      color: #F0F4FF;
+      overflow-x: hidden;
+    }
+
+    /* ── Grid texture ─────────────────────────── */
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ── Nav ──────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: 1.1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.4s, border-color 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(5,13,26,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom-color: rgba(0,212,255,0.12);
+    }
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #00D4FF;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo span { color: rgba(240,244,255,0.5); }
+    .nav-links a {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(240,244,255,0.55);
+      margin-left: 2rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #00D4FF; }
+
+    /* Mobile nav */
+    #nav-toggle { display: none; cursor: pointer; background: none; border: none; color: #F0F4FF; }
+    #mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #050D1A;
+      z-index: 49;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+    #mobile-menu.open { display: flex; }
+    #mobile-menu a {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #F0F4FF;
+      transition: color 0.2s;
+    }
+    #mobile-menu a:hover { color: #00D4FF; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      #nav-toggle { display: block; }
+    }
+
+    /* ── Hero ─────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 2rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -10%;
+      right: -10%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(ellipse at center, rgba(0,212,255,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute;
+      bottom: -20%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(ellipse at center, rgba(0,80,200,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .terminal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #00D4FF;
+      border: 1px solid rgba(0,212,255,0.25);
+      padding: 0.35rem 0.85rem;
+      margin-bottom: 2rem;
+      background: rgba(0,212,255,0.05);
+    }
+    .terminal-badge::before {
+      content: '▶';
+      font-size: 0.6rem;
+    }
+    .hero-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 6.5rem);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+    .typewriter-wrap {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      color: #00D4FF;
+      margin-bottom: 1.75rem;
+      min-height: 2em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .typewriter-wrap .prompt { color: rgba(0,212,255,0.4); }
+    #typewriter-text { color: #00D4FF; }
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: #00D4FF;
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-desc {
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(240,244,255,0.55);
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(0,212,255,0.1);
+    }
+    .hero-stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #00D4FF;
+      line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(240,244,255,0.35);
+      margin-top: 0.3rem;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      background: #00D4FF;
+      color: #050D1A;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { background: #33deff; transform: translateY(-2px); }
+    .btn-ghost {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      border: 1px solid rgba(0,212,255,0.3);
+      color: #00D4FF;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      margin-left: 1rem;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+    .btn-ghost:hover { border-color: #00D4FF; background: rgba(0,212,255,0.07); transform: translateY(-2px); }
+
+    /* ── Section shared ───────────────────────── */
+    section { padding: 6rem 2rem; }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #00D4FF;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-label::before { content: '//'; opacity: 0.5; }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Projects ─────────────────────────────── */
+    #work { background: #080F1F; }
+    .project-card {
+      background: #0D1A30;
+      border: 1px solid rgba(0,212,255,0.08);
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,0.04), transparent);
+      pointer-events: none;
+    }
+    .project-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0,212,255,0.3);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 30px rgba(0,212,255,0.06);
+    }
+    .project-header {
+      padding: 1.5rem 1.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .project-icon {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(0,212,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      background: rgba(0,212,255,0.06);
+    }
+    .project-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: #00D4FF;
+      border: 1px solid rgba(0,212,255,0.2);
+      padding: 0.2rem 0.5rem;
+      background: rgba(0,212,255,0.05);
+    }
+    .project-body { padding: 1.25rem 1.5rem 1.5rem; }
+    .project-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      line-height: 1.3;
+    }
+    .project-desc {
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: rgba(240,244,255,0.5);
+      margin-bottom: 1.25rem;
+    }
+    .project-metric {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #00D4FF;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0,212,255,0.08);
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .tech-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      padding: 0.2rem 0.55rem;
+      background: rgba(0,212,255,0.05);
+      border: 1px solid rgba(0,212,255,0.12);
+      color: rgba(240,244,255,0.5);
+    }
+    .gh-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #00D4FF;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .gh-btn:hover { color: #fff; }
+
+    /* ── About ────────────────────────────────── */
+    #about { background: #050D1A; }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    }
+    .skill-block { margin-bottom: 2rem; }
+    .skill-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: #00D4FF;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .skill-chip {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(26, 39, 68, 0.8);
+      border: 1px solid rgba(0,212,255,0.12);
+      color: rgba(240,244,255,0.6);
+      margin: 0.2rem 0.2rem 0.2rem 0;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-chip:hover { border-color: rgba(0,212,255,0.4); color: #00D4FF; }
+    .about-bio {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(240,244,255,0.65);
+      margin-bottom: 1.5rem;
+    }
+    .about-bio strong { color: #00D4FF; font-weight: 600; }
+    .cert-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-top: 2rem;
+    }
+    @media (max-width: 500px) { .cert-grid { grid-template-columns: 1fr; } }
+    .cert-item {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: rgba(240,244,255,0.5);
+      border: 1px solid rgba(0,212,255,0.1);
+      padding: 0.6rem 0.85rem;
+      background: rgba(13,26,48,0.6);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cert-item::before { content: '✓'; color: #00D4FF; font-size: 0.75rem; }
+
+    /* ── Contact ──────────────────────────────── */
+    #contact {
+      background: #080F1F;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(0,212,255,0.06), transparent 70%);
+      pointer-events: none;
+    }
+    .contact-email {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.25rem, 3.5vw, 2.25rem);
+      font-weight: 600;
+      color: rgba(240,244,255,0.8);
+      display: block;
+      margin: 1.5rem auto 3rem;
+      text-decoration: none;
+      transition: color 0.2s;
+      letter-spacing: -0.01em;
+    }
+    .contact-email:hover { color: #00D4FF; }
+    .contact-location {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: rgba(240,244,255,0.3);
+      margin-bottom: 3rem;
+      letter-spacing: 0.1em;
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .social-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(240,244,255,0.35);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(240,244,255,0.08);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .social-link:hover {
+      color: #00D4FF;
+      border-color: rgba(0,212,255,0.3);
+      background: rgba(0,212,255,0.05);
+    }
+
+    /* ── Footer ───────────────────────────────── */
+    footer {
+      background: #030810;
+      text-align: center;
+      padding: 2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: rgba(240,244,255,0.18);
+    }
+    footer span { color: rgba(0,212,255,0.4); }
+
+    /* ── Reveal ───────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── Stagger children ─────────────────────── */
+    .stagger > * { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .stagger.visible > *:nth-child(1)  { opacity:1; transform:none; transition-delay:0.05s; }
+    .stagger.visible > *:nth-child(2)  { opacity:1; transform:none; transition-delay:0.10s; }
+    .stagger.visible > *:nth-child(3)  { opacity:1; transform:none; transition-delay:0.15s; }
+    .stagger.visible > *:nth-child(4)  { opacity:1; transform:none; transition-delay:0.20s; }
+    .stagger.visible > *:nth-child(5)  { opacity:1; transform:none; transition-delay:0.20s; }
+    .stagger.visible > *:nth-child(6)  { opacity:1; transform:none; transition-delay:0.25s; }
+    .stagger.visible > *:nth-child(7)  { opacity:1; transform:none; transition-delay:0.30s; }
+    .stagger.visible > *:nth-child(8)  { opacity:1; transform:none; transition-delay:0.35s; }
+    .stagger.visible > *:nth-child(9)  { opacity:1; transform:none; transition-delay:0.40s; }
+    .stagger.visible > *:nth-child(10) { opacity:1; transform:none; transition-delay:0.45s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .stagger > * { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="mobile-menu">
+  <button id="mobile-close" aria-label="Close menu"
+    style="position:absolute;top:1.5rem;right:2rem;font-size:1.75rem;background:none;border:none;color:#F0F4FF;cursor:pointer;">✕</button>
+  <a href="#work" onclick="closeMobile()">Work</a>
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<nav id="navbar">
+  <div class="nav-logo"><span>~/</span>victor.chukwudebelu</div>
+  <div class="nav-links">
+    <a href="#work">Projects</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <button id="nav-toggle" aria-label="Open menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+</nav>
+
+<section id="hero" class="grid-bg">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+
+  <div style="max-width:1100px; margin:0 auto; width:100%;">
+    <div class="terminal-badge">Available for senior roles & research collaborations</div>
+
+    <h1 class="hero-name">
+      Victor<br/>Chukwudebelu
+    </h1>
+
+    <div class="typewriter-wrap">
+      <span class="prompt">$&nbsp;</span>
+      <span id="typewriter-text"></span>
+      <span class="cursor"></span>
+    </div>
+
+    <p class="hero-desc">
+      M.S. Computer Science (AI) · Senior AI Research Engineer with deep expertise in machine learning systems, cybersecurity architecture, and financial technology. Based in Montgomery, AL.
+    </p>
+
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">$2B+</div>
+        <div class="hero-stat-label">Transactions / Month</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">97.4%</div>
+        <div class="hero-stat-label">Fraud Detection Precision</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">62%</div>
+        <div class="hero-stat-label">Compliance Review Reduction</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">4M+</div>
+        <div class="hero-stat-label">Documents Processed Daily</div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:0.75rem;">
+      <a href="#work" class="btn-primary">View Projects</a>
+      <a href="#contact" class="btn-ghost">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="reveal">
+      <p class="section-label">Selected Projects</p>
+      <h2 class="section-title">Work that ships<br/>and performs.</h2>
+      <p style="color:rgba(240,244,255,0.4); font-size:0.9rem; max-width:480px; line-height:1.7; margin-bottom:3.5rem;">
+        Production systems, research publications, and tools built across AI, cybersecurity, and financial engineering.
+      </p>
+    </div>
+
+    <div class="stagger" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:1.25rem;">
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🏠</div>
+          <span class="project-tag" style="color:#22c55e; border-color:rgba(34,197,94,0.3); background:rgba(34,197,94,0.05);">🟢 Live</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">ZikLodge</div>
+          <p class="project-desc">Student accommodation finder for UNIZIK students in Awka — verified lodge listings, direct landlord contact, and student-friendly pricing built for the Nigerian university market.</p>
+          <div class="project-metric">Live · zik-finder.vercel.app</div>
+          <div class="project-tags">
+            <span class="tech-pill">Next.js</span><span class="tech-pill">Vercel</span><span class="tech-pill">Real Estate</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://zik-finder.vercel.app" target="_blank" rel="noopener" class="gh-btn">↗ Visit Site</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">📋</div>
+          <span class="project-tag" style="color:#22c55e; border-color:rgba(34,197,94,0.3); background:rgba(34,197,94,0.05);">🟢 Live</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">Presensys</div>
+          <p class="project-desc">Web-based attendance management system for UNIZIK — streamlines student attendance tracking, departmental records, and biometric data authorisation workflows.</p>
+          <div class="project-metric">Live · presensys.vercel.app</div>
+          <div class="project-tags">
+            <span class="tech-pill">Web App</span><span class="tech-pill">Vercel</span><span class="tech-pill">EdTech</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://presensys.vercel.app" target="_blank" rel="noopener" class="gh-btn">↗ Visit Site</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">📈</div>
+          <span class="project-tag">DeFi · Cross-Chain</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">OmniYield</div>
+          <p class="project-desc">Cross-chain DeFi yield aggregator across Base &amp; Solana. Features ERC-4626 auto-compounding vaults, gasless deposits via Pimlico (ERC-4337), deBridge integration, and 37/37 passing smart contract tests.</p>
+          <div class="project-metric">Base Sepolia · ERC-4626 · Solidity + Next.js 16</div>
+          <div class="project-tags">
+            <span class="tech-pill">Solidity</span><span class="tech-pill">Next.js</span><span class="tech-pill">wagmi</span><span class="tech-pill">Pimlico</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://github.com/unveiledhistory49/OmniYield" target="_blank" rel="noopener" class="gh-btn">↗ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🏦</div>
+          <span class="project-tag">DeFi · Lending Protocol</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">LendX Protocol</div>
+          <p class="project-desc">Production-grade decentralised lending &amp; borrowing protocol (Aave/Compound-inspired) on Ethereum Sepolia &amp; Base Sepolia. Scaled-balance interest model, tiered liquidations, flash loans, and 500+ invariant fuzz test runs.</p>
+          <div class="project-metric">Deployed: Ethereum Sepolia + Base Sepolia · Solidity 70%</div>
+          <div class="project-tags">
+            <span class="tech-pill">Solidity</span><span class="tech-pill">Foundry</span><span class="tech-pill">Chainlink</span><span class="tech-pill">TypeScript</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://github.com/unveiledhistory49/LendX" target="_blank" rel="noopener" class="gh-btn">↗ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">⛽</div>
+          <span class="project-tag">Solana · Infrastructure</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">Solana Paymaster</div>
+          <p class="project-desc">Gasless transaction relayer for Solana — sponsors user transactions so they never need SOL for fees. Includes a rules engine, JWT auth, key rotation, rate limiting, Prometheus metrics, and reliable rebroadcasting every 2s during congestion.</p>
+          <div class="project-metric">TypeScript · Docker · Redis · Render-deployable</div>
+          <div class="project-tags">
+            <span class="tech-pill">Solana</span><span class="tech-pill">TypeScript</span><span class="tech-pill">Docker</span><span class="tech-pill">Redis</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://github.com/charlie0x-sol/Paymaster" target="_blank" rel="noopener" class="gh-btn">↗ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">⚡</div>
+          <span class="project-tag">Blockchain · DevOps</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">RPC-CacheFlow</div>
+          <p class="project-desc">Enterprise-grade RPC proxy and gateway for blockchain nodes — intelligent caching, WebSocket multiplexing, P2C load balancing, Redis rate limiting, Prometheus metrics, and a Next.js admin dashboard. Kubernetes-ready with Helm chart.</p>
+          <div class="project-metric">TypeScript 94% · Kubernetes + Helm · Grafana-ready</div>
+          <div class="project-tags">
+            <span class="tech-pill">TypeScript</span><span class="tech-pill">Kubernetes</span><span class="tech-pill">Redis</span><span class="tech-pill">Prometheus</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://github.com/charlie0x-sol/RPC-CacheFlow" target="_blank" rel="noopener" class="gh-btn">↗ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">☀️</div>
+          <span class="project-tag">Solana · Monitoring</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">Helios-Solana</div>
+          <p class="project-desc">High-performance on-chain event sentinel for Solana — monitors accounts and programs in real-time, decodes Anchor/Borsh data, dispatches batched webhooks (1400+ events/sec), and supports WASM transformer plugins for custom pipeline logic.</p>
+          <div class="project-metric">TypeScript + Rust · SQLite WAL · 1400+ events/sec</div>
+          <div class="project-tags">
+            <span class="tech-pill">TypeScript</span><span class="tech-pill">Rust / WASM</span><span class="tech-pill">Solana</span><span class="tech-pill">Docker</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://github.com/charlie0x-sol/Helios-Solana" target="_blank" rel="noopener" class="gh-btn">↗ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🛠️</div>
+          <span class="project-tag">Solana · CLI Tool</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">Sol-Scaffold</div>
+          <p class="project-desc">CLI tool to scaffold production-ready Solana DeFi dApps in seconds — generates swap, lending, staking, and governance primitives with Anchor programs, TypeScript tests, and a pre-wired Next.js frontend.</p>
+          <div class="project-metric">TypeScript + Rust · npm install -g sol-scaffold</div>
+          <div class="project-tags">
+            <span class="tech-pill">TypeScript</span><span class="tech-pill">Rust / Anchor</span><span class="tech-pill">Next.js</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://github.com/charlie0x-sol/Sol-Scaffold" target="_blank" rel="noopener" class="gh-btn">↗ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🌟</div>
+          <span class="project-tag">Solana · Testing</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">Zenith</div>
+          <p class="project-desc">Mainnet state snapshot tool for deterministic Solana integration testing — captures live program state (Jupiter, Marginfi, Raydium) and loads it into a local validator. 6–12x faster than devnet, zero flakiness, offline capable.</p>
+          <div class="project-metric">6–12× faster than devnet · 0% flaky rate · TypeScript</div>
+          <div class="project-tags">
+            <span class="tech-pill">TypeScript</span><span class="tech-pill">Solana CLI</span><span class="tech-pill">Testing</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://github.com/charlie0x-sol/Zenith" target="_blank" rel="noopener" class="gh-btn">↗ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">👛</div>
+          <span class="project-tag">Web3 · Account Abstraction</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">AA Multichain Wallet</div>
+          <p class="project-desc">Production-ready multichain wallet dashboard supporting EVM (Ethereum, Arbitrum) and Solana with ERC-4337 Account Abstraction for gasless transactions, real-time portfolio analytics, and on-chain staking vaults.</p>
+          <div class="project-metric">Turborepo · Next.js + Solidity + Rust / Anchor</div>
+          <div class="project-tags">
+            <span class="tech-pill">TypeScript</span><span class="tech-pill">Solidity</span><span class="tech-pill">Rust</span><span class="tech-pill">Pimlico</span>
+          </div>
+          <div style="margin-top:1.1rem;">
+            <a href="https://github.com/charlie0x-sol/aa-multichain-wallet" target="_blank" rel="noopener" class="gh-btn">↗ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="about-grid">
+
+      <div class="reveal">
+        <p class="section-label">Tech Stack</p>
+
+        <div class="skill-block">
+          <div class="skill-block-label">AI / ML</div>
+          <span class="skill-chip">Deep Learning</span>
+          <span class="skill-chip">NLP</span>
+          <span class="skill-chip">Computer Vision</span>
+          <span class="skill-chip">Reinforcement Learning</span>
+          <span class="skill-chip">Generative AI</span>
+          <span class="skill-chip">LLMs</span>
+          <span class="skill-chip">Federated Learning</span>
+        </div>
+
+        <div class="skill-block">
+          <div class="skill-block-label">Frameworks</div>
+          <span class="skill-chip">PyTorch</span>
+          <span class="skill-chip">TensorFlow</span>
+          <span class="skill-chip">Hugging Face</span>
+          <span class="skill-chip">LangChain</span>
+          <span class="skill-chip">XGBoost</span>
+          <span class="skill-chip">Scikit-learn</span>
+        </div>
+
+        <div class="skill-block">
+          <div class="skill-block-label">Languages</div>
+          <span class="skill-chip">Python</span>
+          <span class="skill-chip">TypeScript</span>
+          <span class="skill-chip">Java</span>
+          <span class="skill-chip">C++</span>
+          <span class="skill-chip">SQL</span>
+          <span class="skill-chip">Solidity</span>
+        </div>
+
+        <div class="skill-block">
+          <div class="skill-block-label">Cloud & MLOps</div>
+          <span class="skill-chip">AWS SageMaker</span>
+          <span class="skill-chip">GCP Vertex AI</span>
+          <span class="skill-chip">Docker</span>
+          <span class="skill-chip">Kubernetes</span>
+          <span class="skill-chip">MLflow</span>
+          <span class="skill-chip">Terraform</span>
+        </div>
+
+        <div class="skill-block">
+          <div class="skill-block-label">Cybersecurity</div>
+          <span class="skill-chip">Zero-Trust</span>
+          <span class="skill-chip">Penetration Testing</span>
+          <span class="skill-chip">SIEM</span>
+          <span class="skill-chip">OWASP</span>
+          <span class="skill-chip">NIST CSF</span>
+          <span class="skill-chip">ISO 27001</span>
+        </div>
+
+        <div class="cert-grid">
+          <div class="cert-item">AWS ML Specialty</div>
+          <div class="cert-item">Google ML Engineer</div>
+          <div class="cert-item">CompTIA Security+</div>
+          <div class="cert-item">CEH (EC-Council)</div>
+          <div class="cert-item">CFA Level I</div>
+          <div class="cert-item">FinTech – Wharton</div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <p class="section-label">About</p>
+        <h2 class="section-title">Building systems<br/>at the edge of what's possible.</h2>
+
+        <p class="about-bio">
+          I'm <strong>Victor Chukwudebelu</strong> — an AI Research Engineer and Computer Scientist with an M.S. from Alabama State University (GPA 3.87), where I was a STEM Excellence Graduate Fellow and published research in IEEE Communications Letters.
+        </p>
+        <p class="about-bio">
+          At <strong>Nexora AI Technologies</strong>, I architect production ML systems that sit at the intersection of intelligence and security — fraud detection platforms processing billions in transactions, NLP pipelines parsing millions of compliance documents, and zero-trust cybersecurity infrastructure.
+        </p>
+        <p class="about-bio">
+          I'm driven by a simple belief: <strong>rigorous engineering and applied research aren't opposites</strong>. The best systems are grounded in theory, hardened in production, and built to be trusted.
+        </p>
+
+        <div style="margin-top:2rem; padding:1.25rem; border:1px solid rgba(0,212,255,0.12); background:rgba(13,26,48,0.5);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:#00D4FF; margin-bottom:0.75rem; letter-spacing:0.1em;">RECENT PUBLICATION</div>
+          <p style="font-size:0.85rem; line-height:1.65; color:rgba(240,244,255,0.55);">
+            Ugochukwu, D., &amp; Patel, R. (2022). <em>Adaptive DRL for Edge Network Resource Management.</em> IEEE Communications Letters, 26(9), 2201–2205.
+          </p>
+        </div>
+
+        <div style="margin-top:1rem; padding:1.25rem; border:1px solid rgba(0,212,255,0.08); background:rgba(13,26,48,0.3);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:#00D4FF; margin-bottom:0.75rem; letter-spacing:0.1em;">UNDER REVIEW</div>
+          <p style="font-size:0.85rem; line-height:1.65; color:rgba(240,244,255,0.45);">
+            Ugochukwu, D. (2023). <em>Machine Learning Approaches to Real-Time Financial Fraud Detection.</em> ICFE 2023.
+          </p>
+        </div>
+
+        <div style="margin-top:2rem; display:flex; gap:1rem; flex-wrap:wrap;">
+          <a href="#contact" class="btn-primary">Work With Me</a>
+          <a href="mailto:victordebelu@outlook.com" class="btn-ghost">Email Directly</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-glow"></div>
+  <div style="max-width:640px; margin:0 auto; position:relative; z-index:1;">
+    <div class="reveal">
+      <p class="section-label" style="justify-content:center;">Contact</p>
+      <h2 class="section-title" style="text-align:center;">Let's build something<br/>that actually works.</h2>
+      <p style="color:rgba(240,244,255,0.4); font-size:0.9rem; line-height:1.75; text-align:center; margin:1.5rem 0 0.5rem;">
+        Open to senior AI/ML engineering roles, research collaborations, FinTech consulting, and speaking engagements.
+      </p>
+      <div class="contact-location">📍 Montgomery, AL · Remote-Friendly</div>
+
+      <a href="mailto:victordebelu@outlook.com" class="contact-email">victordebelu@outlook.com</a>
+      <p style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:rgba(240,244,255,0.25); text-align:center; margin-bottom:2.5rem;">+13478364575</p>
+
+      <div class="social-links">
+        <a href="https://github.com/unveiledhistory49" class="social-link" target="_blank" rel="noopener">GitHub (unveiledhistory49)</a>
+        <a href="https://github.com/charlie0x-sol" class="social-link" target="_blank" rel="noopener">GitHub (charlie0x-sol)</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <span>Victor Chukwudebelu</span> · Montgomery, AL · M.S. Computer Science, Alabama State University</p>
+</footer>
+
+<script>
+  /* ── Typewriter ──────────────────────────── */
+  const roles = [
+    'Senior AI Research Engineer',
+    'Cybersecurity Specialist',
+    'FinTech Solutions Architect',
+    'ML Systems Designer',
+  ];
+  let roleIdx = 0, charIdx = 0, deleting = false;
+  const el = document.getElementById('typewriter-text');
+
+  function type() {
+    const current = roles[roleIdx];
+    if (!deleting) {
+      charIdx++;
+      el.textContent = current.slice(0, charIdx);
+      if (charIdx === current.length) {
+        deleting = true;
+        setTimeout(type, 1800);
+        return;
+      }
+    } else {
+      charIdx--;
+      el.textContent = current.slice(0, charIdx);
+      if (charIdx === 0) {
+        deleting = false;
+        roleIdx = (roleIdx + 1) % roles.length;
+      }
+    }
+    setTimeout(type, deleting ? 45 : 80);
+  }
+  setTimeout(type, 600);
+
+  /* ── Navbar scroll ───────────────────────── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  /* ── Mobile menu ─────────────────────────── */
+  const toggle = document.getElementById('nav-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  document.getElementById('mobile-close').addEventListener('click', closeMobile);
+  toggle.addEventListener('click', () => mobileMenu.classList.add('open'));
+  function closeMobile() { mobileMenu.classList.remove('open'); }
+
+  /* ── Scroll reveal ───────────────────────── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal, .stagger').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
